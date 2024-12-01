@@ -22,6 +22,12 @@ jobs:
   test:
     runs-on: ${{ inputs.runs-on }}
     environment: ${{ inputs.environment }}
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: none
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
