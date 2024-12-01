@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build image
-        uses: ./actions/build-image-to-ecr
+        uses: toketas/test-action/actions/build-image-to-ecr@main
         with:
           docker-build-args: ${{ inputs.docker-build-args }}
           docker-tag: ${{ inputs.docker-tag }}
