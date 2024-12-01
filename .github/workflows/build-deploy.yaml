@@ -49,7 +49,6 @@ jobs:
           aws-role-to-assume: ${{ vars.AWS_CREDS_ROLE_TO_ASSUME }}
           docker-build-args: |
             ${{ inputs.docker-build-args }}
-            BIN=${{ secrets.ARGOCD_AUTH_TOKEN }}
           docker-build-tag: ${{ inputs.docker-build-tag }}
 
       - name: Setup Docker Buildx
