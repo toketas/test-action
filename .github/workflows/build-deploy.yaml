@@ -1,0 +1,28 @@
+name: Build and deploy workflow
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        required: false
+        type: string
+        default: ubuntu-latest
+      environment:
+        required: true
+        type: string
+      docker-build-args:
+        required: false
+        type: string
+        default: ''
+
+test:
+    runs-on: ${{ inputs.runs-on }}
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build image
+        uses: ./actions/build-image-to-ecr@main
+        with:
+          docker-build-args: ${{ inputs.docker-build-args }}

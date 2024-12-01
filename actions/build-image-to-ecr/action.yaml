@@ -5,10 +5,17 @@ inputs:
   environment:
     description: Github Environment
     required: true
+  docker-tag:
+    description: Docker image tag
+    required: true
   docker-build-args:
     description: Build args for 'docker build' command
     required: true
     default: ''
+  docker-file-path:
+    description: Dockerfile custom path
+    required: true
+    default: 'Dockerfile'
 
 runs:
   using: composite
