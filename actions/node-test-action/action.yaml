@@ -1,0 +1,27 @@
+name: Node Test Action
+description: A composite action to check out code, set up Node.js, install dependencies, and run tests.
+
+inputs:
+  node-version:
+    description: The Node.js version to use
+    required: true
+    default: 16
+
+runs:
+  using: composite
+  steps:
+    - name: Check out repository
+      uses: actions/checkout@master
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Install dependencies
+      run: |
+        npm install
+
+    - name: Run tests
+      run: |
+        npm test
