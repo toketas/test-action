@@ -17,6 +17,9 @@ on:
       docker-tag:
         required: true
         type: string
+    secrets:
+      ARGOCD_AUTH_TOKEN:
+        required: false
 
 jobs:
   test:
@@ -38,5 +41,8 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
           aws-ecr-url: ${{ vars.AWS_ECR_URL }}
           aws-role-to-assume: ${{ vars.AWS_CREDS_ROLE_TO_ASSUME }}
-          docker-build-args: ${{ inputs.docker-build-args }}
+          docker-build-args: |
+            ${{ inputs.docker-build-args }}
+            BIN=${{ secrets.ARGOCD_AUTH_TOKEN }}
           docker-build-tag: ${{ inputs.docker-tag }}
+
