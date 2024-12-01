@@ -10,6 +10,12 @@ on:
       environment:
         required: true
         type: string
+      docker-build-context:
+        required: false
+        type: string
+      docker-build-target:
+        required: false
+        type: string
       docker-build-args:
         required: false
         type: string
@@ -44,5 +50,34 @@ jobs:
           docker-build-args: |
             ${{ inputs.docker-build-args }}
             BIN=${{ secrets.ARGOCD_AUTH_TOKEN }}
-          docker-build-tag: ${{ inputs.docker-tag }}
+          docker-build-tag: ${{ inputs.docker-build-tag }}
 
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_CREDS_ROLE_TO_ASSUME }}
+
+      - name: Login to ECR ${{ vars.AWS_ECR_URL }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ vars.AWS_ECR_URL }}
+
+      - name: Build image
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          context: ${{ inputs.docker-build-context }}
+          target: ${{ inputs.docker-build-target }}
+          file: ${{ inputs.docker-build-file-path }}
+          tags: |
+            ${{ vars.AWS_ECR_URL }}/${{ github.repository }}:latest
+            ${{ vars.AWS_ECR_URL }}/${{ github.repository }}:${{ inputs.docker-build-tag }}
+          build-args: |
+            ${{ inputs.docker-build-args }}
+            BIN=${{ secrets.ARGOCD_AUTH_TOKEN }}
