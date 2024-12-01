@@ -2,17 +2,23 @@ name: Build Image to ECR
 description: A composite action to build image to ECR
 
 inputs:
-  environment:
-    description: Github Environment
+  aws-role-to-assume:
+    description: AWS IAM Role for Github to assume
     required: true
-  docker-tag:
+  aws-region:
+    description: AWS Region
+    required: true
+  aws-ecr-url:
+    description: AWS ECR Repository url
+    required: true
+  docker-build-tag:
     description: Docker image tag
     required: true
   docker-build-args:
     description: Build args for 'docker build' command
     required: true
     default: ''
-  docker-file-path:
+  docker-build-file-path:
     description: Dockerfile custom path
     required: true
     default: 'Dockerfile'
@@ -29,13 +35,13 @@ runs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        aws-region: ${{ vars.AWS_REGION }}
-        role-to-assume: ${{ vars.AWS_CREDS_ROLE_TO_ASSUME }}
+        aws-region: ${{ inputs.aws-region }}
+        role-to-assume: ${{ inputs.aws-role-to-assume }}
 
-    - name: Login to ECR ${{ vars.ECR_URL }}
+    - name: Login to ECR ${{ inputs.aws-ecr-url }}
       uses: docker/login-action@v3
       with:
-        registry: ${{ vars.ECR_URL }}
+        registry: ${{ inputs.aws-ecr-url }}
 
     - name: Build image
       uses: docker/build-push-action@v5
@@ -45,9 +51,9 @@ runs:
         cache-to: type=gha,mode=max
         context: ${{ inputs.docker-build-context }}
         target: ${{ inputs.docker-build-target }}
-        file: ${{ inputs.docker-file-path }}
+        file: ${{ inputs.docker-build-file-path }}
         tags: |
-          ${{ vars.ECR_URL }}/${{ github.repository }}:latest
-          ${{ vars.ECR_URL }}/${{ github.repository }}:${{ inputs.docker-tag }}
+          ${{ inputs.aws-ecr-url }}/${{ github.repository }}:latest
+          ${{ inputs.aws-ecr-url }}/${{ github.repository }}:${{ inputs.docker-build-tag }}
         build-args: |
           ${{ inputs.docker-build-args }}

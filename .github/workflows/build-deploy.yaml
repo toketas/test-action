@@ -29,5 +29,8 @@ jobs:
       - name: Build image
         uses: toketas/test-action/actions/build-image-to-ecr@main
         with:
+          aws-region: ${{ vars.AWS_REGION }}
+          aws-ecr-url: ${{ vars.ECR_URL }}
+          aws-role-to-assume: ${{ vars.AWS_CREDS_ROLE_TO_ASSUME }}
           docker-build-args: ${{ inputs.docker-build-args }}
-          docker-tag: ${{ inputs.docker-tag }}
+          docker-build-tag: ${{ inputs.docker-tag }}
