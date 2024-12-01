@@ -20,7 +20,7 @@ on:
         required: false
         type: string
         default: ''
-      docker-tag:
+      docker-build-tag:
         required: true
         type: string
     secrets:
