@@ -14,6 +14,9 @@ on:
         required: false
         type: string
         default: ''
+      docker-tag:
+        required: true
+        type: string
 
 jobs:
   test:
@@ -27,3 +30,4 @@ jobs:
         uses: ./actions/build-image-to-ecr@main
         with:
           docker-build-args: ${{ inputs.docker-build-args }}
+          docker-tag: ${{ inputs.docker-tag }}
